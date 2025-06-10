@@ -9,13 +9,16 @@ def get_partidos_dia():
     data = res.json()
 
     partidos = []
-    if data["result"]:
+    if data.get("result"):
         for match in data["result"]:
-            partidos.append({
-                "id": match["event_key"],
-                "jugador_1": match["event_home_team"],
-                "jugador_2": match["event_away_team"]
-            })
+            jugador_1 = match.get("event_home_team", "")
+            jugador_2 = match.get("event_away_team", "")
+
+            if jugador_1 and jugador_2:
+                partidos.append({
+                    "jugador_1": jugador_1,
+                    "jugador_2": jugador_2
+                })
     return partidos
 
 def get_proximos_eventos(jugador):
