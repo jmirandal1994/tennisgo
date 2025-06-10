@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -64,18 +63,29 @@
   <header>
     <h1>🎾 Partidos de Tenis del Día</h1>
   </header>
+
   <div class="container">
+
+    {% if partidos|length == 0 %}
+      <div class="card">
+        <div class="title">⚠ No se encontraron partidos disponibles por el momento.</div>
+      </div>
+    {% endif %}
+
     {% for p in partidos %}
       <div class="card">
         <div class="title">{{ p.jugador_1 }} vs {{ p.jugador_2 }}</div>
         <div class="divider"></div>
+
         <div><strong>{{ p.jugador_1 }}</strong> - <a href="{{ p.link_1 }}" target="_blank">Ver perfil</a></div>
         {% for t in p.torneos_1 %}
           <div class="torneo {% if t.es_importante %}importante{% else %}noimportante{% endif %}">
             • {{ t.fecha }} - {{ t.torneo }}
           </div>
         {% endfor %}
+
         <div class="divider"></div>
+
         <div><strong>{{ p.jugador_2 }}</strong> - <a href="{{ p.link_2 }}" target="_blank">Ver perfil</a></div>
         {% for t in p.torneos_2 %}
           <div class="torneo {% if t.es_importante %}importante{% else %}noimportante{% endif %}">
@@ -84,6 +94,7 @@
         {% endfor %}
       </div>
     {% endfor %}
+
   </div>
 </body>
 </html>
