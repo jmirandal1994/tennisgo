@@ -1,34 +1,25 @@
 from flask import Flask, render_template
-from scraper import obtener_partidos_dia, obtener_torneos_proximos
+from api_tennis import get_partidos_dia, get_proximos_eventos, get_h2h
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    try:
-        partidos_raw = obtener_partidos_dia()
-    except Exception as e:
-        print("Error al obtener partidos:", e)
-        partidos_raw = []
-
+    partidos_raw = get_partidos_dia()
     partidos = []
 
     for p in partidos_raw:
-        try:
-            torneos_1 = obtener_torneos_proximos(p['link_1'])
-            torneos_2 = obtener_torneos_proximos(p['link_2'])
+        torneos_1 = get_proximos_eventos(p["jugador_1"])
+        torneos_2 = get_proximos_eventos(p["jugador_2"])
+        h2h = get_h2h(p["jugador_1"], p["jugador_2"])
 
-            partidos.append({
-                "jugador_1": p['jugador_1'],
-                "jugador_2": p['jugador_2'],
-                "link_1": p['link_1'],
-                "link_2": p['link_2'],
-                "torneos_1": torneos_1,
-                "torneos_2": torneos_2
-            })
-        except Exception as e:
-            print("Error al obtener torneos para jugadores:", e)
-            continue
+        partidos.append({
+            "jugador_1": p["jugador_1"],
+            "jugador_2": p["jugador_2"],
+            "torneos_1": torneos_1,
+            "torneos_2": torneos_2,
+            "h2h": h2h
+        })
 
     return render_template("index.html", partidos=partidos)
 
